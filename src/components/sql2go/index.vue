@@ -7,13 +7,13 @@
   .sql2go
     .input-component
       .input-title SQL
-      .input(contenteditable="true" @focus="handleFocus" @blur="handleBlur") {{ form.sql }}
+      .input(@input="handleInput" contenteditable="true" @focus="handleFocus" @blur="handleBlur") {{ form.sql }}
     .sql2go-submit
       i.el-icon-refresh(v-if="!isLoading" @click="handleSubmit" style="font-size: 24px;")
       i.el-icon-loading(v-else style="font-size: 24px;")
     .input-component
-      .input-title GO ORM
-      .input {{ formRes.sql }}
+      .input-title GO struct
+      .input {{ (formRes.sql === '') ? 'Generate to go struct' : formRes.sql }}
 </template>
 
 <script>
@@ -25,21 +25,25 @@ export default {
   name: 'sql2go',
   setup () {
     const form = ref({
-      sql: 'Text SQL',
+      sql: 'Taste SQL',
     })
     const formRes = ref({
-      sql: 'Generate to go ORM',
+      sql: '',
     })
 
     const handleFocus = () => {
-      if (form.value.sql === 'Text SQL') form.value.sql = ''
+      if (form.value.sql === 'Taste SQL') form.value.sql = ''
     }
 
     const handleBlur = async (e) => {
       const value = e.target.innerHTML
       await nextTick(() => {
-        if (value === '') form.value.sql = 'Text SQL'
+        if (value === '') form.value.sql = 'Taste SQL'
       })
+    }
+
+    const handleInput = (e) => {
+      form.value.sql = e.target.innerHTML
     }
 
     const handleSubmit = async () => {
@@ -63,6 +67,7 @@ export default {
       form,
       formRes,
 
+      handleInput,
       handleSubmit,
       handleFocus,
       handleBlur
@@ -122,5 +127,6 @@ img {
   height: 60vh;
   margin-left: 20px;
   margin-right: 20px;
+  word-wrap: wrap;
 }
 </style>
