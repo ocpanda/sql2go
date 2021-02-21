@@ -1,23 +1,27 @@
 import axios from 'axios'
+import { app } from '@/main.js'
+import { convertCase } from '@/helper'
 
-export function xhr({
+export const xhr = async ({
   url,
   data,
   params,
   method,
-}) {
-  new Promise((resolve, reject) => {
-    const options = {
-      url,
-      data,
-      params,
-      method,
-    }
-    
-    return axios(options).then(res => {
-      resolve(res)
-    }).catch(err => {
-      reject(err)
-    })
+}) => {
+  const options = {
+    url,
+    data,
+    params,
+    method,
+  }
+  
+  const response = axios(options)
+  .then(res => [convertCase(res.data.Result)])
+  .catch(err => {
+    app.config.globalProperties.$message.error('Something went wrong!!!')
+    return ([undefined, err])
   })
+  .then(([res, err]) => [res, err])
+
+  return response
 }

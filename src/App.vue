@@ -1,14 +1,33 @@
-<template>
-  <img alt="sql2go" src="./assets/img/logo.png">
+<template lang="pug">
+.content
+  sql2go
 </template>
 
 <script>
+import sql2go from './components/sql2go'
+
 export default {
   name: 'App',
-
+  components: {
+    sql2go,
+  }
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
+.content {
+  display: flex;
+  justify-content: center;
+}
+</style>
 
+<style lang="scss">
+body {
+  margin: 0 auto;
+}
+
+#app {
+  display: flex;
+  justify-content: center;
+}
 </style>
