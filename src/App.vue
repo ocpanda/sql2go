@@ -24,6 +24,7 @@ export default {
 <style lang="scss">
 body {
   margin: 0 auto;
+  font-family: "Times New Roman", Times, serif;
 }
 
 #app {

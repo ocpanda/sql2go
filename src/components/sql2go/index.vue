@@ -5,31 +5,42 @@
     h1 Welcome to sql2go
 
   .sql2go
-    el-input(v-model="form.sql" :rows="20" placeholder="Text SQL" type="textarea")
-    .sql2go-submit(@click="handleSubmit")
-      i.el-icon-refresh(v-if="!isLoading" style="font-size: 24px;")
+    .input-component
+      .input-title SQL
+      .input(contenteditable="true" @focus="handleFocus" @blur="handleBlur") {{ form.sql }}
+    .sql2go-submit
+      i.el-icon-refresh(v-if="!isLoading" @click="handleSubmit" style="font-size: 24px;")
       i.el-icon-loading(v-else style="font-size: 24px;")
-    el-input(:disabled="true" v-model="formRes.sql" :rows="20" placeholder="Generate to go ORM" type="textarea")
+    .input-component
+      .input-title GO ORM
+      .input {{ formRes.sql }}
 </template>
 
 <script>
-import { ref } from 'vue'
-import { ElementInput } from 'element-plus'
+import { ref, nextTick } from 'vue'
 import { useLoading } from '@/global/useLoading'
 import { convertSqlToGo } from '@/services/sql2goServices'
 
 export default {
   name: 'sql2go',
-  components: {
-    ElementInput
-  },
   setup () {
     const form = ref({
-      sql: '',
+      sql: 'Text SQL',
     })
     const formRes = ref({
-      sql: '',
+      sql: 'Generate to go ORM',
     })
+
+    const handleFocus = () => {
+      if (form.value.sql === 'Text SQL') form.value.sql = ''
+    }
+
+    const handleBlur = async (e) => {
+      const value = e.target.innerHTML
+      await nextTick(() => {
+        if (value === '') form.value.sql = 'Text SQL'
+      })
+    }
 
     const handleSubmit = async () => {
       const body = {
@@ -53,6 +64,8 @@ export default {
       formRes,
 
       handleSubmit,
+      handleFocus,
+      handleBlur
     }
   }
 }
@@ -66,6 +79,10 @@ img {
 .title {
   display: flex;
   justify-content: center;
+
+  h1 {
+    margin-left: 8px;
+  }
 }
 
 .sql2go {
@@ -85,8 +102,24 @@ img {
   }
 }
 
-:deep(.el-textarea) {
+.input-title {
+  border: solid 1px cornflowerblue;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
   width: 40vw;
+  height: 20px;
+  margin-left: 20px;
+  margin-right: 20px;
+  background: cornflowerblue;
+}
+
+.input {
+  border: solid 1px gray;
+  padding: 10px;
+  width: 40vw;
+  height: 60vh;
   margin-left: 20px;
   margin-right: 20px;
 }
