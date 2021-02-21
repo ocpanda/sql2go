@@ -42,8 +42,11 @@ export default {
       })
     }
 
-    const handleInput = (e) => {
-      form.value.sql = e.target.innerHTML
+    const handleInput = async (e) => {
+      const value = e.target.innerHTML
+      await nextTick(() => {
+        form.value.sql = value
+      })
     }
 
     const handleSubmit = async () => {
@@ -121,6 +124,7 @@ img {
 }
 
 .input {
+  overflow: scroll;
   border: solid 1px gray;
   padding: 10px;
   width: 40vw;
