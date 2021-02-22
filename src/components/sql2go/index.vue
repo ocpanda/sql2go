@@ -7,40 +7,33 @@
   .sql2go
     .input-component
       .input-title SQL
-      .input(@input="handleInput" contenteditable="true" @focus="handleFocus" @blur="handleBlur") {{ form.sql }}
+      el-input.input(v-model="form.sql" :resize="'none'" placeholder="Taste SQL" :rows="20" type="textarea")
     .sql2go-submit
       i.el-icon-refresh(v-if="!isLoading" @click="handleSubmit" style="font-size: 24px;")
       i.el-icon-loading(v-else style="font-size: 24px;")
     .input-component
       .input-title GO struct
-      .input {{ (formRes.sql === '') ? 'Generate to go struct' : formRes.sql }}
+      .input.el-textarea__inner.input-res(v-html="formRes.sql")
 </template>
 
 <script>
 import { ref, nextTick } from 'vue'
 import { useLoading } from '@/global/useLoading'
 import { convertSqlToGo } from '@/services/sql2goServices'
+import { ElInput } from 'element-plus'
 
 export default {
   name: 'sql2go',
+  components: {
+    ElInput,
+  },
   setup () {
     const form = ref({
-      sql: 'Taste SQL',
+      sql: '',
     })
     const formRes = ref({
       sql: '',
     })
-
-    const handleFocus = () => {
-      if (form.value.sql === 'Taste SQL') form.value.sql = ''
-    }
-
-    const handleBlur = async (e) => {
-      const value = e.target.innerHTML
-      await nextTick(() => {
-        if (value === '') form.value.sql = 'Taste SQL'
-      })
-    }
 
     const handleInput = async (e) => {
       const value = e.target.innerHTML
@@ -58,7 +51,7 @@ export default {
       const [res, err] = await convertSqlToGo({ body })
       unLoad()
       if (!err) {
-        formRes.value.sql = res
+        formRes.value.sql = '<div>' + res.replace(/\n/g, '<br>').replace(/\s/g, '&nbsp') + '</div>'
       }
     }
 
@@ -72,8 +65,6 @@ export default {
 
       handleInput,
       handleSubmit,
-      handleFocus,
-      handleBlur
     }
   }
 }
@@ -115,8 +106,8 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 10px;
-  width: 40vw;
+  padding: 5px 0 5px 0;
+  width: 45vw;
   height: 20px;
   margin-left: 20px;
   margin-right: 20px;
@@ -126,11 +117,19 @@ img {
 .input {
   overflow: scroll;
   border: solid 1px gray;
-  padding: 10px;
-  width: 40vw;
+  width: 45vw;
   height: 60vh;
   margin-left: 20px;
   margin-right: 20px;
   word-wrap: wrap;
+}
+
+::v-deep(.el-textarea__inner) {
+  border-radius: 0;
+}
+
+.input-res {
+  overflow: auto;
+  font-size: 10px;
 }
 </style>
