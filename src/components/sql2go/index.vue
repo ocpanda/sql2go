@@ -14,7 +14,7 @@
     .input-component
       .input-title GO struct
       .input
-        .input-inner.input-res(v-html="formRes.sql")
+        .input-inner.input-res(v-html="(formRes.sql) ? formRes.sql : 'Generate to go struct'")
 </template>
 
 <script>
@@ -54,8 +54,8 @@ export default {
       if (!err) {
         formRes.value.sql = '<div>' + res
           .replace(/\n/g, '<br>')
-          .replace(/\s/g, '&nbsp')
-          .replace(/\s{2, 4}/g, '&#9;') + '</div>'
+          .replace(/\s{4}/g, '&#9;')
+          .replace(/\s/g, '&nbsp') + '</div>'
       }
     }
 
