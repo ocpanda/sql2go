@@ -13,7 +13,8 @@
       i.el-icon-loading(v-else style="font-size: 24px;")
     .input-component
       .input-title GO struct
-      .input.el-textarea__inner.input-res(v-html="formRes.sql")
+      .input
+        .input-inner.input-res(v-html="formRes.sql")
 </template>
 
 <script>
@@ -51,7 +52,10 @@ export default {
       const [res, err] = await convertSqlToGo({ body })
       unLoad()
       if (!err) {
-        formRes.value.sql = '<div>' + res.replace(/\n/g, '<br>').replace(/\s/g, '&nbsp') + '</div>'
+        formRes.value.sql = '<div>' + res
+          .replace(/\n/g, '<br>')
+          .replace(/\s/g, '&nbsp')
+          .replace(/\s{2, n}/g, '&#9;') + '</div>'
       }
     }
 
@@ -128,6 +132,11 @@ img {
   border-radius: 0;
   height: 100%;
   width: 100%;
+}
+
+.input-inner {
+  white-space: pre;
+  padding: 10px;
 }
 
 .input-res {
