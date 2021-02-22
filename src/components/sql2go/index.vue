@@ -55,7 +55,7 @@ export default {
         formRes.value.sql = '<div>' + res
           .replace(/\n/g, '<br>')
           .replace(/\s/g, '&nbsp')
-          .replace(/\s{2, n}/g, '&#9;') + '</div>'
+          .replace(/\s{2, 4}/g, '&#9;') + '</div>'
       }
     }
 
