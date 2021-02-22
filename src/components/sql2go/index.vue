@@ -126,6 +126,8 @@ img {
 
 ::v-deep(.el-textarea__inner) {
   border-radius: 0;
+  height: 100%;
+  width: 100%;
 }
 
 .input-res {
