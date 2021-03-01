@@ -12,28 +12,48 @@
       i.el-icon-refresh(v-if="!isLoading" @click="handleSubmit" style="font-size: 24px;")
       i.el-icon-loading(v-else style="font-size: 24px;")
     .input-component
-      .input-title GO struct
+      .input-title
+        .content GO struct
+          el-tooltip(effect="dark" content="Copy" placement="bottom-end")
+            i.el-icon-document-copy(ref="copyButton" :data-clipboard-text="formRes.originSQL")
       .input
         .input-inner.input-res(v-html="(formRes.sql) ? formRes.sql : 'Generate to go struct'")
 </template>
 
 <script>
-import { ref, nextTick } from 'vue'
+import { ref, nextTick, onMounted } from 'vue'
 import { useLoading } from '@/global/useLoading'
 import { convertSqlToGo } from '@/services/sql2goServices'
-import { ElInput } from 'element-plus'
+import { ElInput, ElTooltip } from 'element-plus'
+import { app } from '@/main.js'
+import Clipboard from 'clipboard'
 
 export default {
   name: 'sql2go',
   components: {
-    ElInput,
+    ElInput, ElTooltip,
   },
   setup () {
+    const copyButton = ref()
+
+    onMounted(() => {
+      const clipBoard = new Clipboard(copyButton.value)
+
+      clipBoard.on('success', () => {
+        app.config.globalProperties.$message.success('Clipped!!')
+      });
+
+      clipBoard.on('error', () => {
+        app.config.globalProperties.$message.error('Clipped failed!')
+      });
+    })
+
     const form = ref({
       sql: '',
     })
     const formRes = ref({
       sql: '',
+      originSQL: '',
     })
 
     const handleInput = async (e) => {
@@ -52,10 +72,11 @@ export default {
       const [res, err] = await convertSqlToGo({ body })
       unLoad()
       if (!err) {
+        formRes.value.originSQL = res
         formRes.value.sql = '<div>' + res
           .replace(/\n/g, '<br>')
-          .replace(/\s{4}/g, '&#9;')
-          .replace(/\s/g, '&nbsp') + '</div>'
+          // .replace(/\s{4}/g, '&#9;') + '</div>'
+          .replace(/\s/g, '&nbsp;') + '</div>'
       }
     }
 
@@ -63,6 +84,7 @@ export default {
 
     return {
       isLoading,
+      copyButton,
 
       form,
       formRes,
@@ -116,6 +138,20 @@ img {
   margin-left: 20px;
   margin-right: 20px;
   background: cornflowerblue;
+
+  .content {
+    width: 100%;
+    text-align: center;
+
+    i {
+      float: right;
+      padding: 3px 3px 0 0;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
 }
 
 .input {
