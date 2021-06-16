@@ -1,7 +1,7 @@
 import { xhr } from './xhr'
 
 export const convertSqlToGo = ({ body }) => {
-  const url = 'https://easy2read.today/sql2go'
+  const url = 'https://sql2goapi.ricestdiotech.com'
   const dataRenameList = [
     ['sql', 'SQL'],
   ]
