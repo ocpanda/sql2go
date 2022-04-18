@@ -1,5 +1,7 @@
 # sql2go
 
+## SQL 轉換為 golang 使用格式小工具
+
 ## Project setup
 ```
 yarn install
